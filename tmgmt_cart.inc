@@ -144,7 +144,7 @@ class TMGMTCart {
    * into the $_SESSION variable
    */
   private function saveCart() {
-    $_SESSION['tmgmt_cart'] = $this->cart;
+    $_SESSION[$this->session_key] = $this->cart;
   }
 
   /**
