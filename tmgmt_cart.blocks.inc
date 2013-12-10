@@ -54,7 +54,7 @@ function tmgmt_cart_block_view($delta = '') {
  */
 function _tmgmt_cart_contents() {
 
-  $markup = drupal_get_form('tmgmt_cart_form');
+  $markup = drupal_get_form('tmgmt_cart_cart_form');
   return $markup;
 
 }
