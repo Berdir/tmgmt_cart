@@ -36,10 +36,10 @@ class TMGMTCart {
    * Returns the singleton cart.
    */
   public static function getInstance($session_key = 'tmgmt_cart') {
-    if (!isset($this->instances[$session_key])) {
-      $this->instances[$session_key] = new self();
+    if (!isset(self::$instances[$session_key])) {
+      self::$instances[$session_key] = new self($session_key);
     }
-    return $this->instances[$session_key];
+    return self::$instances[$session_key];
   }
 
   /**
