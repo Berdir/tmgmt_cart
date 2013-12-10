@@ -1,0 +1,8 @@
+name = TMGMT Job Item Cart
+description = 'Shopping' cart functionality to add job items to a new job for the Translation Management module
+package = Translation Management
+core = 7.x
+dependencies[] = tmgmt
+files[] = tmgmt_cart.inc
+
+version = "7.x-1.0"

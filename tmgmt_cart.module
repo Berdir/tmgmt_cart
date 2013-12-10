@@ -1,0 +1,161 @@
+<?php
+
+include_once 'tmgmt_cart.blocks.inc';
+
+/**
+ * Implements hook_form_alter()
+ *
+ * @param array $form
+ * @param array $form_state
+ * @param string $form_id
+ */
+function tmgmt_cart_form_alter(&$form, &$form_state, $form_id) {
+
+  // is there a way to use TMGMTSourceUIControllerInterface::overviewForm()
+  // to alter this form? the regex below was just for testing purposes, there
+  // is surely a better way!
+
+  // any form with 'tmgmt' and 'source' in the form_id
+  if (preg_match('/^.*?(?:\b|_)tmgmt(?:\b|_).*?(?:\b|_)source(?:\b|_).*?$/m', $form_id)) {
+
+    // add an 'add to cart' button with a submit handler
+    $form['select']['tmgmt_cart_add'] = array(
+      '#type' => 'submit',
+      '#value' => t('Add to cart'),
+      '#submit' => array('_tmgmt_cart_add_items_from_source'),
+    );
+
+  }
+
+}
+
+/**
+ * Submit handler declarded in tmgmt_cart_form_alter()
+ *
+ * @param array $form
+ * @param array $form_state
+ */
+function _tmgmt_cart_add_items_from_source($form, &$form_state) {
+
+  if (array_key_exists('views_bulk_operations', $form_state['values'])) {
+    $items = array_filter($form_state['values']['views_bulk_operations']);
+    $type = 'node';
+  } else {
+    $items = array_filter($form_state['values']['items']);
+    $type = $form_state['item_type'];
+  }
+
+  $tmgmt_cart = new TMGMTCart();
+  $tmgmt_cart->addItems($type, $items);
+
+}
+
+/**
+ * Implements hook_form()
+ *
+ * @return array $form
+ */
+function tmgmt_cart_form($form, &$form_state) {
+
+  $cart  = new TMGMTCart();
+  $items = $cart->getItems();
+
+  $form['items_set'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Job Items Cart'),
+    '#collapsible' => TRUE,
+    '#collapsed' => TRUE,
+  );
+
+  if (count($items) === 0) {
+    $form['items_set']['none'] = array(
+      '#markup' => '<span>' . t('There are no items in your cart.') . '</span>',
+    );
+  } else {
+    $form['items_set']['items'] = array(
+      '#type' => 'checkboxes',
+      '#title' => t('Job items'),
+      '#description' => t('Select items to remove'),
+      '#options' => $items,
+    );
+  }
+
+  if (count($items) !== 0) {
+    $form['items_set']['checkout'] = array(
+      '#type' => 'submit',
+      '#value' => t('Checkout'),
+      '#attributes' => array(
+        'class' => array(
+          'btn',
+          'btn-primary',
+        ),
+      ),
+      '#submit' => array('_tmgmt_cart_form_submit_checkout'),
+    );
+
+    $form['items_set']['update'] = array(
+      '#type' => 'submit',
+      '#value' => t('Update cart'),
+      '#attributes' => array(
+        'class' => array(
+          'btn',
+          'btn-primary',
+        ),
+      ),
+      '#submit' => array('_tmgmt_cart_form_submit_update'),
+    );
+
+    $form['items_set']['empty'] = array(
+      '#type' => 'submit',
+      '#value' => t('Empty cart'),
+      '#attributes' => array(
+        'class' => array(
+          'btn',
+          'btn-primary',
+        ),
+      ),
+      '#submit' => array('_tmgmt_cart_form_submit_empty'),
+    );
+
+  }
+
+  return $form;
+
+}
+
+/**
+ * Custom form submit callback for
+ * tmgmt_cart_form()
+ *
+ * @param array $form
+ * @param array $form_state
+ */
+function _tmgmt_cart_form_submit_update($form, &$form_state) {
+  $cart = new TMGMTCart();
+  $items = array_filter($form_state['values']['items']);
+  $cart->removeItems($items);
+}
+
+/**
+ * Custom form submit callback for
+ * tmgmt_cart_form()
+ *
+ * @param array $form
+ * @param array $form_state
+ */
+function _tmgmt_cart_form_submit_empty($form, &$form_state) {
+  $cart = new TMGMTCart();
+  $cart->emptyCart();
+}
+
+/**
+ * Custom form submit callback for
+ * tmgmt_cart_form()
+ *
+ * @param array $form
+ * @param array $form_state
+ */
+function _tmgmt_cart_form_submit_checkout($form, &$form_state) {
+  $cart = new TMGMTCart();
+  $cart->checkout();
+}
