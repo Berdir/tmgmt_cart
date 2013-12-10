@@ -3,6 +3,11 @@
 class TMGMTCart {
 
   /**
+   * Singleton instances of cart.
+   */
+  private static $instances;
+
+  /**
    * Array key to store the contents of
    * $this->cart into the $_SESSION variable
    *
@@ -22,9 +27,19 @@ class TMGMTCart {
    * Set up a new cart based on an existing $_SESSION key
    * or create a new on as an empty array with no items
    */
-  public function __construct($session_key = NULL) {
-    $this->session_key = isset($session_key) ? $session_key : 'tmgmt_cart';
+  public function __construct($session_key) {
+    $this->session_key = $session_key;
     $this->cart = array_key_exists($this->session_key, $_SESSION) ? $_SESSION[$this->session_key] : array();
+  }
+
+  /**
+   * Returns the singleton cart.
+   */
+  public static function getInstance($session_key = 'tmgmt_cart') {
+    if (!isset($this->instances[$session_key])) {
+      $this->instances[$session_key] = new self();
+    }
+    return $this->instances[$session_key];
   }
 
   /**
