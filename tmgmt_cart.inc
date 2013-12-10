@@ -148,8 +148,7 @@ class TMGMTCart {
   }
 
   /**
-   * Returns an array of plugin -> item_type
-   * for each item type for all active sources
+   * Returns an array of item_type => plugin for each item type for all active sources.
    *
    * This is used to store items in the cart and
    * during checkout. Each source's 'Request Translation'
@@ -162,12 +161,11 @@ class TMGMTCart {
    */
   private function getSourceMap() {
 
-    $sources = tmgmt_source_plugin_info();
     $source_map = array();
 
-    foreach ($sources as $machine_name => $source) {
-      foreach ($source['item types'] as $item_type => $type) {
-        $source_map[$item_type] = $machine_name;
+    foreach (tmgmt_source_plugin_info() as $plugin => $info) {
+      foreach ($info['item types'] as $item_type => $type) {
+        $source_map[$item_type] = $plugin;
       }
     }
     $source_map['node'] = 'node';
