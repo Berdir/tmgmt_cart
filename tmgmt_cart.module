@@ -45,19 +45,19 @@ function _tmgmt_cart_add_items_from_source($form, &$form_state) {
     $type = $form_state['item_type'];
   }
 
-  $tmgmt_cart = new TMGMTCart();
+  $tmgmt_cart = TMGMTCart::getInstance();
   $tmgmt_cart->addItems($type, $items);
 
 }
 
 /**
- * Implements hook_form()
+ * Form constructor for cart form.
  *
  * @return array $form
  */
-function tmgmt_cart_form($form, &$form_state) {
+function tmgmt_cart_cart_form($form, &$form_state) {
 
-  $cart  = new TMGMTCart();
+  $cart  = TMGMTCart::getInstance();
   $items = $cart->getItems();
 
   $form['items_set'] = array(
@@ -90,7 +90,7 @@ function tmgmt_cart_form($form, &$form_state) {
           'btn-primary',
         ),
       ),
-      '#submit' => array('_tmgmt_cart_form_submit_checkout'),
+      '#submit' => array('_tmgmt_cart_cart_form_submit_checkout'),
     );
 
     $form['items_set']['update'] = array(
@@ -102,7 +102,7 @@ function tmgmt_cart_form($form, &$form_state) {
           'btn-primary',
         ),
       ),
-      '#submit' => array('_tmgmt_cart_form_submit_update'),
+      '#submit' => array('_tmgmt_cart_cart_form_submit_update'),
     );
 
     $form['items_set']['empty'] = array(
@@ -114,7 +114,7 @@ function tmgmt_cart_form($form, &$form_state) {
           'btn-primary',
         ),
       ),
-      '#submit' => array('_tmgmt_cart_form_submit_empty'),
+      '#submit' => array('_tmgmt_cart_cart_form_submit_empty'),
     );
 
   }
@@ -125,37 +125,37 @@ function tmgmt_cart_form($form, &$form_state) {
 
 /**
  * Custom form submit callback for
- * tmgmt_cart_form()
+ * tmgmt_cart_cart_form()
  *
  * @param array $form
  * @param array $form_state
  */
-function _tmgmt_cart_form_submit_update($form, &$form_state) {
-  $cart = new TMGMTCart();
+function _tmgmt_cart_cart_form_submit_update($form, &$form_state) {
+  $cart = TMGMTCart::getInstance();
   $items = array_filter($form_state['values']['items']);
   $cart->removeItems($items);
 }
 
 /**
  * Custom form submit callback for
- * tmgmt_cart_form()
+ * tmgmt_cart_cart_form()
  *
  * @param array $form
  * @param array $form_state
  */
-function _tmgmt_cart_form_submit_empty($form, &$form_state) {
-  $cart = new TMGMTCart();
+function _tmgmt_cart_cart_form_submit_empty($form, &$form_state) {
+  $cart = TMGMTCart::getInstance();
   $cart->emptyCart();
 }
 
 /**
  * Custom form submit callback for
- * tmgmt_cart_form()
+ * tmgmt_cart_cart_form()
  *
  * @param array $form
  * @param array $form_state
  */
-function _tmgmt_cart_form_submit_checkout($form, &$form_state) {
-  $cart = new TMGMTCart();
+function _tmgmt_cart_cart_form_submit_checkout($form, &$form_state) {
+  $cart = TMGMTCart::getInstance();
   $cart->checkout();
 }

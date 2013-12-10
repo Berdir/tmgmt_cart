@@ -3,6 +3,11 @@
 class TMGMTCart {
 
   /**
+   * Singleton instances of cart.
+   */
+  private static $instances;
+
+  /**
    * Array key to store the contents of
    * $this->cart into the $_SESSION variable
    *
@@ -22,9 +27,19 @@ class TMGMTCart {
    * Set up a new cart based on an existing $_SESSION key
    * or create a new on as an empty array with no items
    */
-  public function __construct($session_key = NULL) {
-    $this->session_key = isset($session_key) ? $session_key : 'tmgmt_cart';
+  public function __construct($session_key) {
+    $this->session_key = $session_key;
     $this->cart = array_key_exists($this->session_key, $_SESSION) ? $_SESSION[$this->session_key] : array();
+  }
+
+  /**
+   * Returns the singleton cart.
+   */
+  public static function getInstance($session_key = 'tmgmt_cart') {
+    if (!isset($this->instances[$session_key])) {
+      $this->instances[$session_key] = new self();
+    }
+    return $this->instances[$session_key];
   }
 
   /**
@@ -129,12 +144,11 @@ class TMGMTCart {
    * into the $_SESSION variable
    */
   private function saveCart() {
-    $_SESSION['tmgmt_cart'] = $this->cart;
+    $_SESSION[$this->session_key] = $this->cart;
   }
 
   /**
-   * Returns an array of plugin -> item_type
-   * for each item type for all active sources
+   * Returns an array of item_type => plugin for each item type for all active sources.
    *
    * This is used to store items in the cart and
    * during checkout. Each source's 'Request Translation'
@@ -147,15 +161,14 @@ class TMGMTCart {
    */
   private function getSourceMap() {
 
-    $sources = tmgmt_source_plugin_info();
     $source_map = array();
 
-    foreach ($sources as $machine_name => $source) {
-      foreach ($source['item types'] as $item_type => $type) {
-        $source_map[$item_type] = $machine_name;
+    foreach (tmgmt_source_plugin_info() as $plugin => $info) {
+      foreach ($info['item types'] as $item_type => $type) {
+        $source_map[$item_type] = $plugin;
       }
-      $source_map['node'] = 'node';
     }
+    $source_map['node'] = 'node';
 
     return $source_map;
 
