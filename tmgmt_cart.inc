@@ -169,8 +169,8 @@ class TMGMTCart {
       foreach ($source['item types'] as $item_type => $type) {
         $source_map[$item_type] = $machine_name;
       }
-      $source_map['node'] = 'node';
     }
+    $source_map['node'] = 'node';
 
     return $source_map;
 
