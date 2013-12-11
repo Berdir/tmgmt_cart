@@ -81,7 +81,7 @@ function tmgmt_cart_block_view($delta = '') {
 
     case 'tmgmt_cart_contents':
 
-      $cart = G::getInstance();
+      $cart = TMGMTCart::getInstance();
       $items = $cart->getItems();
 
       if (count($items) === 0 && variable_get('tmgmt_cart_hide_empty_cart', 0) === 1) {
