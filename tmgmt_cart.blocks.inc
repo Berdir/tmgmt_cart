@@ -81,7 +81,7 @@ function tmgmt_cart_block_view($delta = '') {
 
     case 'tmgmt_cart_contents':
 
-      $cart = TMGMTCart::getInstance();
+      $cart = G::getInstance();
       $items = $cart->getItems();
 
       if (count($items) === 0 && variable_get('tmgmt_cart_hide_empty_cart', 0) === 1) {
@@ -102,6 +102,8 @@ function tmgmt_cart_block_view($delta = '') {
  * Callback function to generate markup
  * for the 'shopping' cart of job items
  *
+ * @param array $items
+ *  - job items from TMGMTCart->getItems()
  * @return string $markup
  */
 function _tmgmt_cart_contents(array $items) {

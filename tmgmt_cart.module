@@ -53,6 +53,11 @@ function _tmgmt_cart_add_items_from_source($form, &$form_state) {
 /**
  * Form constructor for cart form.
  *
+ * @param array $form
+ * @param array $form_state
+ * @param array $items
+ *  - job items from TMGMTCart->getItems()
+ *
  * @return array $form
  */
 function tmgmt_cart_cart_form($form, &$form_state, $items) {
