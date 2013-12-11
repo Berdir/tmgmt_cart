@@ -19,7 +19,7 @@ function tmgmt_cart_form_alter(&$form, &$form_state, $form_id) {
   if (preg_match('/^.*?(?:\b|_)tmgmt(?:\b|_).*?(?:\b|_)source(?:\b|_).*?$/m', $form_id)) {
 
     // add an 'add to cart' button with a submit handler
-    $form['select']['tmgmt_cart_add'] = array(
+    $form['actions']['tmgmt_cart_add'] = array(
       '#type' => 'submit',
       '#value' => t('Add to cart'),
       '#submit' => array('_tmgmt_cart_add_items_from_source'),
