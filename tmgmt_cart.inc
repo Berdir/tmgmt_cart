@@ -1,5 +1,13 @@
 <?php
 
+/**
+ * @file
+ * Contains TMGMTCart.
+ */
+
+/**
+ * Represents a job item cart.
+ */
 class TMGMTCart {
 
   /**
@@ -34,6 +42,12 @@ class TMGMTCart {
 
   /**
    * Returns the singleton cart.
+   *
+   * @param string $session_key
+   *   Name of the cart. @todo: Really necessary?
+   *
+   * @return self
+   *   An instance of the cart.
    */
   public static function getInstance($session_key = 'tmgmt_cart') {
     if (!isset(self::$instances[$session_key])) {
@@ -43,7 +57,7 @@ class TMGMTCart {
   }
 
   /**
-   * Add job items to the cart
+   * Adds job items to the cart.
    *
    * @param array $items
    */
@@ -51,7 +65,7 @@ class TMGMTCart {
 
     $source_map = $this->getSourceMap();
 
-    foreach ($items as $key => $value) {
+    foreach ($items as $value) {
       $this->cart[$type . ':' . $value] = array(
         'source' => $source_map[$type],
         'type' => $type,
@@ -60,14 +74,14 @@ class TMGMTCart {
       );
     }
 
-    // save into the session
+    // Save into the session.
     $this->saveCart();
 
     drupal_set_message(t('The items have been added to your cart.'));
   }
 
   /**
-   * Remove job items from the cart
+   * Remove job items from the cart.
    *
    * @param array $items
    */
@@ -100,9 +114,7 @@ class TMGMTCart {
   }
 
   /**
-   * Create a job based on the current
-   * items in the cart and empty the cart
-   *
+   * Create a job based on the current items in the cart and empty the cart.
    */
   public function checkout() {
 
@@ -115,7 +127,7 @@ class TMGMTCart {
       $job->addItem($source_map[$item['type']], $item['type'], $item['value']);
     }
 
-    // add a default translator
+    // Add a default translator.
     $translators = tmgmt_translator_load_available($job);
 
     if (count($translators) !== 0) {
@@ -131,7 +143,7 @@ class TMGMTCart {
   }
 
   /**
-   * Remove all contents from the cart
+   * Remove all contents from the cart.
    */
   public function emptyCart() {
     $this->cart = array();
@@ -140,8 +152,7 @@ class TMGMTCart {
   }
 
   /**
-   * Save the current state of the cart
-   * into the $_SESSION variable
+   * Save the current state of the cart into the $_SESSION variable.
    */
   private function saveCart() {
     $_SESSION[$this->session_key] = $this->cart;

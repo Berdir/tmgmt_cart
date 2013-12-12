@@ -1,9 +1,12 @@
 <?php
 
 /**
- * Implements hook_block_info()
- *
- * @return array $blocks
+ * @file
+ * Contains block related hook implementations for tmgmt_cart.
+ */
+
+/**
+ * Implements hook_block_info().
  */
 function tmgmt_cart_block_info() {
 
@@ -21,9 +24,7 @@ function tmgmt_cart_block_info() {
 }
 
 /**
- * Implements hook_block_configure()
- *
- * @param string $delta
+ * Implements hook_block_configure().
  */
 function tmgmt_cart_block_configure($delta = '') {
 
@@ -32,7 +33,6 @@ function tmgmt_cart_block_configure($delta = '') {
   switch ($delta) {
 
     case 'tmgmt_cart_contents':
-
       $form['visibility']['empty'] = array(
         '#type' => 'fieldset',
         '#title' => t('Empty Cart'),
@@ -56,10 +56,7 @@ function tmgmt_cart_block_configure($delta = '') {
 }
 
 /**
- * Implements hook_block_save()
- *
- * @param string $delta
- * @param array $edit
+ * Implements hook_block_save().
  */
 function tmgmt_cart_block_save($delta = '', $edit = array()) {
 
@@ -70,17 +67,14 @@ function tmgmt_cart_block_save($delta = '', $edit = array()) {
 }
 
 /**
- * Implements hook_block_view()
- *
- * @param string $delta
- * @return array $block
+ * Implements hook_block_view().
  */
 function tmgmt_cart_block_view($delta = '') {
+  $block = array();
 
   switch ($delta) {
 
     case 'tmgmt_cart_contents':
-
       $cart = TMGMTCart::getInstance();
       $items = $cart->getItems();
 
@@ -95,15 +89,14 @@ function tmgmt_cart_block_view($delta = '') {
   }
 
   return $block;
-
 }
 
 /**
- * Callback function to generate markup
- * for the 'shopping' cart of job items
+ * Callback function to generate markup for the 'shopping' cart of job items.
  *
  * @param array $items
- *  - job items from TMGMTCart->getItems()
+ *   Job items from TMGMTCart->getItems().
+ *
  * @return string $markup
  */
 function _tmgmt_cart_contents(array $items) {
